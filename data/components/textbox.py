@@ -140,9 +140,12 @@ class TextHandler(object):
                         self.talking_sprite.dialogue = dialogue
                     elif not self.game_data['talked to sick brother']:
                         self.game_data['talked to sick brother'] = True
-                         
-                        dialogue = ['Hurry to the NorthEast Shores!',
-                                    'I do not have much time left.']
+                        
+                        dialogue=['I was just kidding about that sick stuff',
+                                "Really, I don't even have a brother",
+                                "I am a pony"] 
+                        #dialogue = ['Hurry to the NorthEast Shores!',
+                        #            'I do not have much time left.']
                         self.talking_sprite.dialogue = dialogue
                     else:
                         self.end_dialogue(current_time)

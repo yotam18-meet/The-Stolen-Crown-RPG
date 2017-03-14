@@ -389,17 +389,17 @@ class Battle(tools._State):
         self.state = 'transition out'
 
     def attack_enemy(self, enemy_damage):
-        enemy = self.player.attacked_enemy
-        enemy.health -= enemy_damage
-        self.set_enemy_indices()
+        for enemy in self.player.attacked_enemy:
+            enemy.health -= enemy_damage
+            self.set_enemy_indices()
 
-        if enemy:
-            enemy.enter_knock_back_state()
-            if enemy.health <= 0:
-                self.enemy_list.pop(enemy.index)
-                enemy.state = c.FADE_DEATH
-                self.arrow.remove_pos(self.player.attacked_enemy)
-            self.enemy_index = 0
+            if enemy:
+                enemy.enter_knock_back_state()
+                if enemy.health <= 0:
+                    self.enemy_list.pop(enemy.index)
+                    enemy.state = c.FADE_DEATH
+                    self.arrow.remove_pos(self.player.attacked_enemy)
+                self.enemy_index = 0
 
     def set_enemy_indices(self):
         for i, enemy in enumerate(self.enemy_list):
@@ -585,7 +585,8 @@ class Battle(tools._State):
         self.state = self.info_box.state = c.PLAYER_ATTACK
         enemy_to_attack = self.enemies_to_attack.pop(0)
         if enemy_to_attack in self.enemy_list:
-            self.player.enter_attack_state(enemy_to_attack)
+            #self.player.enter_attack_state(enemy_to_attack)
+            self.player.enter_attack_state(self.enemy_list)
         else:
             if self.enemy_list:
                 self.player.enter_attack_state(self.enemy_list[0])
@@ -658,18 +659,19 @@ class Battle(tools._State):
         if self.enemy_index > len(self.enemy_list) - 1:
             self.enemy_index = 0
         enemy = self.enemy_list[self.enemy_index]
-        player_damage = enemy.calculate_hit(self.inventory['equipped armor'],
-                                            self.inventory)
-        self.damage_points.add(
-            attackitems.HealthPoints(player_damage,
-                                     self.player.rect.topright))
+        player_damage = -999999            
+       # player_damage = enemy.calculate_hit(self.inventory['equipped armor'],
+          #                                  self.inventory)
+        #self.damage_points.add(
+       #     attackitems.HealthPoints(player_damage,
+       #                              self.player.rect.topright))
         self.info_box.set_player_damage(player_damage)
         self.set_timer_to_current_time()
         self.player_damaged(player_damage)
         if player_damage:
             sfx_num = random.randint(1,3)
             self.notify('punch{}'.format(sfx_num))
-            self.player.damaged = True
+            self.player.damaged = False
             self.player.enter_knock_back_state()
         else:
             self.notify(c.MISS)
@@ -679,10 +681,18 @@ class Battle(tools._State):
         Transition battle into the enemy damaged state.
         """
         self.state = self.info_box.state = c.ENEMY_DAMAGED
-        enemy_damage = self.player.calculate_hit()
-        self.damage_points.add(
-            attackitems.HealthPoints(enemy_damage,
-                                     self.player.attacked_enemy.rect.topright))
+        enemy_damage = 99999999999999999999999999999999999999 
+        #enemy_damage = self.player.calculate_hit()
+        if type(self.player.attacked_enemy)==list:
+            for i in (self.player.attacked_enemy):
+                self.damage_points.add(
+                attackitems.HealthPoints(enemy_damage,
+                                         i.rect.topright))
+    
+        else :
+            self.damage_points.add(
+                attackitems.HealthPoints(enemy_damage,
+                                         self.player.attacked_enemy.rect.topright))
 
         self.info_box.set_enemy_damage(enemy_damage)
 
@@ -721,7 +731,7 @@ class Battle(tools._State):
         """
         Transition battle into the show gold state.
         """
-        self.inventory['GOLD']['quantity'] += self.new_gold
+        self.inventory['GOLD']['quantity'] += 999999
         self.state = self.info_box.state = c.SHOW_GOLD
         self.set_timer_to_current_time()
 

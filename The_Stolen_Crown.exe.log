@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "The_Stolen_Crown.py", line 14, in <module>
+    main()
+  File "data\main.pyc", line 58, in main
+  File "data\tools.pyc", line 85, in main
+  File "data\tools.pyc", line 38, in update
+  File "data\states\levels.pyc", line 491, in update
+  File "data\states\levels.pyc", line 351, in running_normally
+  File "data\states\levels.pyc", line 509, in draw_level
+KeyboardInterrupt
